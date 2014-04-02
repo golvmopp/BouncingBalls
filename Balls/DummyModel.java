@@ -15,9 +15,9 @@ public class DummyModel implements IBouncingBallsModel {
 		this.areaHeight = height;
 		x = 1;
 		y = 1;
-		vx = 7;
-		vy = 4;
-		r = Math.random(); // TODO Fix tiny balls
+		vx = 2;
+		vy = 10;
+		r = 0.6; // TODO Make sure tiny balls don't spawn
                 r = r > 1 ? 1 : r;
 	}
 
@@ -29,6 +29,8 @@ public class DummyModel implements IBouncingBallsModel {
 		if (y < r || y > areaHeight - r) {
 			vy *= -1;
 		}
+                
+                vy -= 0.1;
 		x += vx * deltaT;
 		y += vy * deltaT;
 	}

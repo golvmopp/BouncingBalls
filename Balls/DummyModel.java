@@ -29,20 +29,25 @@ public class DummyModel implements IBouncingBallsModel {
         double deltaY = ballList.get(1).getY() - ballList.get(0).getY();
         double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
 
-        if (distance <= ballList.get(1).getR() + ballList.get(0).getR() && !(ballList.get(0).getC() || ballList.get(1).getC())) {
+   /*     if (distance <= ballList.get(1).getR() + ballList.get(0).getR() && !(ballList.get(0).getC() || ballList.get(1).getC())) {
             i = true;
             ballList.get(0).setC(true);
             ballList.get(1).setC(true);
         } else if (distance > ballList.get(1).getR() + ballList.get(0).getR() && (ballList.get(0).getC() || ballList.get(1).getC())) {
+            i = false;
             ballList.get(0).setC(false);
             ballList.get(1).setC(false);
-        }
-        for (Ball b : ballList) {
-            b.tick(deltaT, i);
-        }
+        }*/
         if (i) {
-            Collide(ballList.get(0), ballList.get(1));
-        }
+            Collide(ballList.get(0), ballList.get(1));//*
+            ballList.get(0).x += ballList.get(0).vx * deltaT;
+            ballList.get(0).y += ballList.get(0).vy * deltaT;
+            ballList.get(1).x += ballList.get(1).vx * deltaT;
+            ballList.get(1).y += ballList.get(1).vy * deltaT;//*/
+        } else
+            for (Ball b : ballList) {
+                b.tick(deltaT, i);
+            }
     }
 
     private void Collide(Ball b1, Ball b2) {
@@ -71,8 +76,8 @@ public class DummyModel implements IBouncingBallsModel {
             starting += b.getStartingE();
         }
         
-        v1 *= Math.abs(-starting+current)/current;
-        v2 *= Math.abs(-starting+current)/current;
+ //       v1 *= Math.abs(-starting+current)/current;
+   //     v2 *= Math.abs(-starting+current)/current;
         
         polarb1 = rectToPolar(v1, rotb1[1]);
         polarb2 = rectToPolar(v2, rotb2[1]);
@@ -117,7 +122,7 @@ public class DummyModel implements IBouncingBallsModel {
 
         private final double areaWidth;
         private final double areaHeight;
-        private double x, y, vx, vy, r, m;
+        public double x, y, vx, vy, r, m;
         private boolean c;
         
         private double startingE;
@@ -131,8 +136,8 @@ public class DummyModel implements IBouncingBallsModel {
             x = n % 2 == 0 ? 1 : areaWidth - 1;
             y = n % 2 == 0 ? 2 : 2;
             
-            vx = n % 2 == 0 ? 2 : 5; 
-            vy = n % 2 == 0 ? 7 : 9;
+            vx = n % 2 == 0 ? 8 : 9; 
+            vy = n % 2 == 0 ? 8 : 9;
             
             r = n % 2 == 0 ? 0.8 : 0.5;
             
@@ -143,15 +148,14 @@ public class DummyModel implements IBouncingBallsModel {
         }
 
         public void tick(double deltaT, boolean collide) {
-            if (x < r || x > areaWidth - r) {
+            if ((x < r && vx < 0) || (vx > 0 && x > areaWidth - r)) {
                 vx *= -1;
-            }
-            if (y <= r && vy <= 0 || y >= areaHeight - r) {
-                
+            } else if (y <= r && vy <= 0 ) { //|| y >= areaHeight - r) {
                 vy *= -1;
+            } else {
+                vy -= 0.2;
             }
-            System.out.println(getE());
-            vy -= 0.2;
+            
             x += vx * deltaT;
             y += vy * deltaT;
         }
